@@ -1,0 +1,18 @@
+version: '3'
+services:
+  ubuntu:
+    build:
+      context: . 
+      dockerfile: Dockerfile_bionic
+    image: ubuntu:bionic 
+    container_name: ubuntu_bionic
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../../:/home/TSu/shellScript
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    env_file:
+      - ubuntu.env 
+    working_dir: /home/TSu/shellScript
+    entrypoint: 
+      - /bin/bash
