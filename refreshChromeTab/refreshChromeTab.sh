@@ -8,34 +8,29 @@ exitHandle(){
 
 
 checkTimeSlotAvailable(){
-  chomeID=1
-
   # Get the window id of the currently focus window so we can re-activate at the end
   CUR_WID=$(xdotool getwindowfocus)
 
-
   # Search for the browser
-  WID=$(xdotool search --onlyvisible --class chrome|head -${chomeID})
-  echo $WID
+  WID=$(xdotool search --onlyvisible --class chrome|head -1)
 
   # Activate the browser
   xdotool windowactivate $WID
-  #xdotool windowsize --usehints $WID 100 100
-  #xdotool getactivewindow windowmove 100 100
+  sleep 1
+  xdotool windowsize $WID 400 250
+  sleep 1
+  xdotool windowmove $WID 20 500
+  sleep 1
 
   # Use key
   #xdotool key 'ctrl+r'
   echo "Activate the tab"
   xdotool key 'ctrl+8'
-  sleep 0.2
+  sleep 0.1
 
   echo "Refresh the tab"
   xdotool key 'ctrl+r'
   sleep 5
-
-  #echo "View source code"
-  #xdotool key 'ctrl+u'
-  #sleep 0.2
 
   echo "Save file"
   rm ~/Desktop/*.html || true
@@ -43,16 +38,11 @@ checkTimeSlotAvailable(){
   sleep 0.5
   echo "Confirm"
   xdotool key Return
-  sleep 0.5
-  #xdotool key Return
-  #sleep 2
-  #xdotool key 'ctrl+w'
-  #sleep 0.1
+  sleep 2
 
-  xdotool key 'alt+space'
-  sleep 0.2
-  xdotool key Return
-  sleep 0.1
+  echo "Minimizing the window"
+  xdotool windowminimize $WID
+  sleep 0.01
 
   rm ./*.html || true
   mv ~/Desktop/*.html ./saveHTML.html
@@ -61,15 +51,24 @@ checkTimeSlotAvailable(){
    then
      echo "yes there is delivery window" # SomeString was found
      paplay eventually.ogg
-   else
-     if grep -q "No delivery windows available" "./saveHTML.html";
-     then
-       echo "no delivery"
-       #paplay fail.mp3
-     fi
+
+     # Play a Youtube video
+     xdotool windowactivate $WID
+     sleep 2
+     echo "Activate the tab 2"
+     xdotool key 'ctrl+2'
+     sleep 2
+     xdotool key 'ctrl+r'
+     sleep 2
+  fi
+  if grep -q "No delivery windows available" "./saveHTML.html";
+    then
+      echo "no delivery"
+      #paplay fail.mp3
   fi
 
   # Activate the original window
+  echo "Back to original window"
   xdotool windowactivate $CUR_WID
 }
 
@@ -78,6 +77,7 @@ exitFlag=1
 trap exitHandle exit SIGTERM SIGKILL
 while [ ${exitFlag} ]; do
   checkTimeSlotAvailable
-  sleep 60
-  #exit 0
+  break
+  #sleep 60
 done
+exit 0
