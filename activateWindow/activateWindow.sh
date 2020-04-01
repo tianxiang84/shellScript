@@ -25,10 +25,10 @@ activateWindow(){
 
   # Activate the window
   xdotool windowactivate $WID
-  sleep 0.01
+  #sleep 0.01
 
   # Press a key
-  xdotool key Escape
+  #xdotool key Escape
   #sleep 0.1
 
   # Move the mouse (polar coordinate clockwise, first number is angle in degree (0=up, 90=left), second number is distance)
